@@ -118,10 +118,6 @@ def charge_times(config, target_level):
     if target_level <= 0.0: # the target level is invalid
         return '00:00', '00:00'
     unavailable_energy, full_energy, current_energy, real_soc = energy_values(config)
-    # Check if the battery's SOC is at the ODS
-    if current_energy <= unavailable_energy:
-        # If so, always charge during the charge time
-        return config['charge_period']['start'], config['charge_period']['end']
     energy_gap = target_level - current_energy # additional energy required to reach target
     if energy_gap <= 0.0: # the target level is already attained or exceeded
         return '00:00', '00:00'
