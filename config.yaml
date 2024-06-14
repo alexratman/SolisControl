@@ -3,11 +3,13 @@ hass_is_global: false
 apps:
   solis_flux_times:
     forecast_remaining: 'energy_production_today_remaining' # entity id of solar forecast remaining energy (kWh) today - in 'sensor' domain
+    forecast_current_hour: 'energy_current_hour' # entity id of solar forecast for current hour
+    forecast_next_hour: 'energy_next_hour' # entity id of solar forecast for following hour
     morning_requirement: 12.0 # ideal target kWh level for rest of the day (solar predicted + battery stored) at morning charge period
     # zero means morning charging will be actively turned off each day (use a negative number to disable any action in the morning)
     evening_requirement: 5.0 # ideal target kWh level for rest of the day (solar predicted + battery stored) at evening discharge period
     # zero means evening discharging will be actively turned off each day (use a negative number to disable any action in the evening)
-    cron_before: 20 # minutes (default 20) before start of periods below to set charging/discharging times based on target levels
+    cron_before: 5 # minutes (default 20) before start of periods below to set charging/discharging times based on target levels
     forecast_uplift: 1.0 # multiplication factor for forecast values if they prove to be pessimistic or optimistic
     solis_control:
       key_secret: !secret solis_key_secret
@@ -21,10 +23,10 @@ apps:
       # Also see https://www.youtube.com/watch?v=h1A80cSOrhA to view battery Dis/Charging Current Limits
       inverter_max_current: 62.5 # in amps - see inverter datasheet specs for 'Max. charge / discharge current'  (eg 62.5A or 100A)
       charge_period: # Octopus Flux Cheap period in morning when energy can be imported from the grid at low rates
-        start: "02:05" # HH:MM string
+        start: "02:10" # HH:MM string
         end: "04:55" # HH:MM string
         current: 50 # charge current setting in amps
       discharge_period: # Octopus Flux Peak period in evening when energy can be exported to the grid at high rates
-        start: "16:05" # HH:MM string
+        start: "16:10" # HH:MM string
         end: "18:55" # HH:MM string
         current: 50 # discharge current setting in amps
