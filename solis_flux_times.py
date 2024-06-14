@@ -38,6 +38,18 @@ def pyscript_get(entity_name): # creates persistent pyscript state variable if i
 def get_forecast(forecast_type=None, save=False):
     # get the solar forecast (in kWh) or if not available use average of last n_forecasts
     forecast = sensor_get(pyscript.app_config['forecast_remaining'])
+    forecast_ch = sensor_get(pyscript.app_config['forecast_current_hour'])
+    forecast_nh = sensor_get(pyscript.app_config['forecast_next_hour'])
+    log.info('Forecast remaining: %s, current hour: %s, next hour: %s', forecast, forecast_ch, forecast_nh)
+    if forecast is not None:
+        forecast_calc = float(forecast) - float(forecast_ch) - float(forecast_nh)
+        log.info('Forecast calc, forecast remaining: %s, current hour: %s, next hour: %s', forecast_calc)
+        if forecast_calc < 0:
+            forecast_calc = float(forecast) - float(forecast_ch)
+            log.info('Forecast calc, forecast remaining: %s, current hour: %s', forecast_calc)
+            if forecast_calc < 0:
+                forecast_calc = 0.0
+    forecast = forecast_calc
     if not forecast_type:
         return None if forecast is None else float(forecast)
     old_forecasts = 'pyscript.' +forecast_type+'_forecasts'
@@ -174,5 +186,4 @@ fields:
             if forecast:
                 level_required = calc_level(level_required, forecast, forecast_type)
         set_times(action, level_required, test=True)
-
 
